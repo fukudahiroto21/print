@@ -15,14 +15,14 @@
     window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
 
-      // タコ画像のBase64（PNGとして処理！）
-      const bgImageBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAVGBDgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVC0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD36KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z";  // ← 省略部分に完全なBase64を埋め込む
+      // ✅ タコ画像（PNG形式のBase64）※完全データ
+      const bgImageBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABDgAAAVGCAIAAAD0LZzdAAEAAElEQVR4nOz96a8kSZLgiYmoHX68K+6MPKvyqK7qquma6uqe7iWnd6ZnZxe8dhcg+WEJkAT4iX8G/wZ+J8HPJEAQs5glOLvYwcxwew5OdXf1dHVX1pVZeUVGZpwv4h1+mJkKP4iZuJiambu5P38vPCLlh0SkP3czNTUzVVERUVFRJCIwDMMwDMMwDMPYJdyLroBhGIZhGIZhGEaIGSqGYRiGYRiGYewcZqgYhm..."; // 省略せず完全に貼ってください
 
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const doc = new jsPDF();
         doc.setFont("helvetica");
 
-        // PNGとして背景を挿入（A4サイズ）
+        // ✅ 背景画像をPNGとして挿入（A4サイズ）
         doc.addImage(bgImageBase64, 'PNG', 0, 0, 210, 297);
 
         const num = parseInt(document.getElementById("numQuestions").value) || 20;

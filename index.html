@@ -17,6 +17,8 @@
 
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const doc = new jsPDF();
+        doc.setFont("helvetica"); // ← フォントを明示的に指定
+
         const num = parseInt(document.getElementById("numQuestions").value) || 20;
         const questions = [];
 
@@ -30,7 +32,7 @@
         }
 
         doc.setFontSize(16);
-        doc.text("Math Worksheet", 20, 20);
+        doc.text("Math Worksheet", 20, 20); // 英語タイトルに変更
 
         let x = 20;
         let y = 40;

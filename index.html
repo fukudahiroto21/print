@@ -2,14 +2,66 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>画像ダウンロード</title>
+  <title>計算プリント生成</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+  <h2>計算プリントPDF作成</h2>
+  <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
+  <br><br>
+  <button id="createPdfBtn">PDFを作成</button>
 
-  <h1>画像ダウンロード</h1>
-  <a href="images/sample.png" download="ダウンロード画像.png">
-    <button>PNG画像をダウンロード</button>
-  </a>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const { jsPDF } = window.jspdf;
 
+      document.getElementById("createPdfBtn").addEventListener("click", () => {
+        const img = new Image();
+        img.src = "sample.png"; // 同じフォルダにある画像ファイル
+
+        img.onload = () => {
+          const doc = new jsPDF();
+          doc.addImage(img, 'PNG', 0, 0, 210, 297); // A4サイズ全体に背景を敷く（単位mm）
+
+          doc.setFont("helvetica");
+          const num = parseInt(document.getElementById("numQuestions").value) || 20;
+          const questions = [];
+
+          for (let i = 0; i < num; i++) {
+            const a = Math.floor(Math.random() * 90) + 10;
+            const b = Math.floor(Math.random() * 90) + 10;
+            const op = Math.random() > 0.5 ? "+" : "-";
+            const left = op === "+" ? a : Math.max(a, b);
+            const right = op === "+" ? b : Math.min(a, b);
+            questions.push(`${left} ${op} ${right} =`);
+          }
+
+          doc.setFontSize(16);
+          doc.text("Math Worksheet", 20, 20);
+
+          let x = 20;
+          let y = 40;
+          const lineHeight = 10;
+
+          for (let i = 0; i < questions.length; i++) {
+            doc.text(questions[i], x, y);
+            y += lineHeight;
+
+            if ((i + 1) % (num / 2) === 0) {
+              x += 80;
+              y = 40;
+            }
+          }
+
+          doc.save("worksheet.pdf");
+        };
+
+        img.onerror = () => {
+          alert("画像の読み込みに失敗しました。sample.png が正しく設置されているか確認してください。");
+        };
+      });
+    });
+  </script>
 </body>
 </html>
+

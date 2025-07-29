@@ -2,61 +2,14 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>背景付き計算プリントPDF</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>画像ダウンロード</title>
 </head>
 <body>
-  <h2>背景付き計算プリントPDF</h2>
-  <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
-  <br><br>
-  <button id="createPdfBtn">PDFを作成</button>
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const { jsPDF } = window.jspdf;
+  <h1>画像ダウンロード</h1>
+  <a href="images/sample.png" download="ダウンロード画像.png">
+    <button>PNG画像をダウンロード</button>
+  </a>
 
-      // ✅ タコ画像（PNG形式のBase64）※完全データ
-      const bgImageBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABDgAAAVGCAIAAAD0LZzdAAEAAElEQVR4nOz96a8kSZLgiYmoHX68K+6MPKvyqK7qquma6uqe7iWnd6ZnZxe8dhcg+WEJkAT4iX8G/wZ+J8HPJEAQs5glOLvYwcxwew5OdXf1dHVX1pVZeUVGZpwv4h1+mJkKP4iZuJiambu5P38vPCLlh0SkP3czNTUzVVERUVFRJCIwDMMwDMMwDMPYJdyLroBhGIZhGIZhGEaIGSqGYRiGYRiGYewcZqgYhm..."; // 省略せず完全に貼ってください
-
-      document.getElementById("createPdfBtn").addEventListener("click", () => {
-        const doc = new jsPDF();
-        doc.setFont("helvetica");
-
-        // ✅ 背景画像をPNGとして挿入（A4サイズ）
-        doc.addImage(bgImageBase64, 'PNG', 0, 0, 210, 297);
-
-        const num = parseInt(document.getElementById("numQuestions").value) || 20;
-        const questions = [];
-
-        for (let i = 0; i < num; i++) {
-          const a = Math.floor(Math.random() * 90) + 10;
-          const b = Math.floor(Math.random() * 90) + 10;
-          const op = Math.random() > 0.5 ? "+" : "-";
-          const left = op === "+" ? a : Math.max(a, b);
-          const right = op === "+" ? b : Math.min(a, b);
-          questions.push(`${left} ${op} ${right} =`);
-        }
-
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);  // 黒文字
-        doc.text("Math Worksheet", 20, 20);
-
-        let x = 20;
-        let y = 40;
-        const lineHeight = 10;
-
-        for (let i = 0; i < questions.length; i++) {
-          doc.text(questions[i], x, y);
-          y += lineHeight;
-          if ((i + 1) % (num / 2) === 0) {
-            x += 80;
-            y = 40;
-          }
-        }
-
-        doc.save("worksheet_with_octopus.pdf");
-      });
-    });
-  </script>
 </body>
 </html>

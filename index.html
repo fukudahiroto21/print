@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Hello</title>
+  <title>計算プリント生成</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h1>Welcome to my website!</h1>
+  <h2>計算プリントPDF作成</h2>
+  <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
+  <br><br>
+  <button onclick="generatePDF()">PDFを作成</button>
+
+  <script>
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const num = parseInt(document.getElementById("numQuestions").value) || 20;
+      const questions = [];
+
+      // 問題を生成（足し算・引き算）
+      for (let i = 0; i < num; i++) {
+        const a = Math.floor(Math.random() * 90) + 10;
+        const b = Math.floor(Math.random() * 90) + 10;
+        const op = Math.random() > 0.5 ? "+" : "−";
+        const left = op === "+" ? a : Math.max(a, b);
+        const right = op === "+" ? b : Math.min(a, b);
+        questions.push(`${left} ${op} ${right} =`);
+      }
+
+      doc.setFontSize(16);
+      doc.text("【計算プリント】", 20, 20);
+
+      let x = 20;
+      let y = 40;
+      const lineHeight = 10;
+
+      for (let i = 0; i < questions.length; i++) {
+        doc.text(questions[i], x, y);
+        y += lineHeight;
+
+        if ((i + 1) % (num / 2) === 0) {
+          x += 80;
+          y = 40;
+        }
+      }
+
+      doc.save("keisan-print.pdf");
+    }
+  </script>
 </body>
 </html>

@@ -9,52 +9,46 @@
   <h2>計算プリントPDF作成</h2>
   <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
   <br><br>
-  <button onclick="generatePDF()">PDFを作成</button>
+  <button id="createPdfBtn">PDFを作成</button>
 
   <script>
-    // IPAexGothic（Base64で埋め込み済み）※一部だけを短縮して記載
-    const IPA_FONT = '...（ここにBase64化されたTTFデータが入ります）...';
-
-    async function generatePDF() {
+    window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
 
-      // フォントを登録
-      doc.addFileToVFS("IPAexGothic.ttf", IPA_FONT);
-      doc.addFont("IPAexGothic.ttf", "IPAexGothic", "normal");
-      doc.setFont("IPAexGothic");
+      document.getElementById("createPdfBtn").addEventListener("click", () => {
+        const doc = new jsPDF();
+        const num = parseInt(document.getElementById("numQuestions").value) || 20;
+        const questions = [];
 
-      const num = parseInt(document.getElementById("numQuestions").value) || 20;
-      const questions = [];
-
-      for (let i = 0; i < num; i++) {
-        const a = Math.floor(Math.random() * 90) + 10;
-        const b = Math.floor(Math.random() * 90) + 10;
-        const op = Math.random() > 0.5 ? "+" : "-";
-        const left = op === "+" ? a : Math.max(a, b);
-        const right = op === "+" ? b : Math.min(a, b);
-        questions.push(`${left} ${op} ${right} =`);
-      }
-
-      doc.setFontSize(16);
-      doc.text("【計算プリント】", 20, 20);
-
-      let x = 20;
-      let y = 40;
-      const lineHeight = 10;
-
-      for (let i = 0; i < questions.length; i++) {
-        doc.text(questions[i], x, y);
-        y += lineHeight;
-
-        if ((i + 1) % (num / 2) === 0) {
-          x += 80;
-          y = 40;
+        for (let i = 0; i < num; i++) {
+          const a = Math.floor(Math.random() * 90) + 10;
+          const b = Math.floor(Math.random() * 90) + 10;
+          const op = Math.random() > 0.5 ? "+" : "-";
+          const left = op === "+" ? a : Math.max(a, b);
+          const right = op === "+" ? b : Math.min(a, b);
+          questions.push(`${left} ${op} ${right} =`);
         }
-      }
 
-      doc.save("keisan-print.pdf");
-    }
+        doc.setFontSize(16);
+        doc.text("Math Worksheet", 20, 20);
+
+        let x = 20;
+        let y = 40;
+        const lineHeight = 10;
+
+        for (let i = 0; i < questions.length; i++) {
+          doc.text(questions[i], x, y);
+          y += lineHeight;
+
+          if ((i + 1) % (num / 2) === 0) {
+            x += 80;
+            y = 40;
+          }
+        }
+
+        doc.save("worksheet.pdf");
+      });
+    });
   </script>
 </body>
 </html>

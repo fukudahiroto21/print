@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>計算プリント生成</title>
 
-  <!-- jsPDFと日本語フォントIPAexGothicの読み込み -->
+  <!-- jsPDFと日本語フォント読み込み -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/jspdf@2.5.1/dist/polyfills.umd.min.js"></script>
   <script src="https://unpkg.com/jspdf@2.5.1/dist/fonts/ttf/ipaexg.js"></script>
 </head>
 <body>
   <h2>計算プリントPDF作成</h2>
-  <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
+  <label>問題数（10〜50）：<input type="number" id="numQuestions" value="20" min="10" max="50"></label>
   <br><br>
   <button onclick="generatePDF()">PDFを作成</button>
 
@@ -20,16 +20,16 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      // 日本語フォントの追加と設定
+      // 日本語フォントの読み込み・設定
       doc.addFileToVFS("ipaexg.ttf", window.ipaexg);
       doc.addFont("ipaexg.ttf", "IPAexGothic", "normal");
       doc.setFont("IPAexGothic");
-      doc.setFontSize(16);
+      doc.setFontSize(14);
 
       const num = parseInt(document.getElementById("numQuestions").value) || 20;
       const questions = [];
 
-      // 問題を生成（足し算・引き算）
+      // 問題を生成（+ と − の混合）
       for (let i = 0; i < num; i++) {
         const a = Math.floor(Math.random() * 90) + 10;
         const b = Math.floor(Math.random() * 90) + 10;
@@ -43,14 +43,16 @@
 
       let x = 20;
       let y = 40;
+      const colCount = 2;
+      const rowCount = num / colCount;
       const lineHeight = 10;
 
       for (let i = 0; i < questions.length; i++) {
         doc.text(questions[i], x, y);
         y += lineHeight;
 
-        if ((i + 1) % (num / 2) === 0) {
-          x += 80;
+        if ((i + 1) % rowCount === 0) {
+          x += 80; // 列幅
           y = 40;
         }
       }

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>背景付きPDF</title>
+  <title>背景付き計算プリントPDF</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
@@ -15,14 +15,14 @@
     window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
 
-      // 画像（タコのイラスト）のBase64データ
-      const bgImageBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAx...（省略）";
+      // タコの背景画像（Base64形式）
+      const bgImageBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAVGBDgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVC0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD36KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z";
 
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const doc = new jsPDF();
         doc.setFont("helvetica");
 
-        // A4サイズに背景画像を挿入（mm単位: 210 x 297）
+        // 背景画像をページ全面に挿入（A4縦：210×297mm）
         doc.addImage(bgImageBase64, 'JPEG', 0, 0, 210, 297);
 
         const num = parseInt(document.getElementById("numQuestions").value) || 20;
@@ -38,6 +38,7 @@
         }
 
         doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);  // 黒文字
         doc.text("Math Worksheet", 20, 20);
 
         let x = 20;
@@ -47,7 +48,6 @@
         for (let i = 0; i < questions.length; i++) {
           doc.text(questions[i], x, y);
           y += lineHeight;
-
           if ((i + 1) % (num / 2) === 0) {
             x += 80;
             y = 40;

@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>計算プリント生成</title>
+
+  <!-- jsPDFと日本語フォントIPAexGothicの読み込み -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf@2.5.1/dist/polyfills.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf@2.5.1/dist/fonts/ttf/ipaexg.js"></script>
 </head>
 <body>
   <h2>計算プリントPDF作成</h2>
@@ -15,6 +19,12 @@
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
+
+      // 日本語フォントの追加と設定
+      doc.addFileToVFS("ipaexg.ttf", window.ipaexg);
+      doc.addFont("ipaexg.ttf", "IPAexGothic", "normal");
+      doc.setFont("IPAexGothic");
+      doc.setFontSize(16);
 
       const num = parseInt(document.getElementById("numQuestions").value) || 20;
       const questions = [];
@@ -29,7 +39,6 @@
         questions.push(`${left} ${op} ${right} =`);
       }
 
-      doc.setFontSize(16);
       doc.text("【計算プリント】", 20, 20);
 
       let x = 20;

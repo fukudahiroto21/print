@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>計算プリント生成</title>
+  <title>背景付きPDF</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h2>計算プリントPDF作成</h2>
+  <h2>背景付き計算プリントPDF</h2>
   <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
   <br><br>
   <button id="createPdfBtn">PDFを作成</button>
@@ -15,9 +15,15 @@
     window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
 
+      // 画像（タコのイラスト）のBase64データ
+      const bgImageBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAx...（省略）";
+
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const doc = new jsPDF();
-        doc.setFont("helvetica"); // ← フォントを明示的に指定
+        doc.setFont("helvetica");
+
+        // A4サイズに背景画像を挿入（mm単位: 210 x 297）
+        doc.addImage(bgImageBase64, 'JPEG', 0, 0, 210, 297);
 
         const num = parseInt(document.getElementById("numQuestions").value) || 20;
         const questions = [];
@@ -32,7 +38,7 @@
         }
 
         doc.setFontSize(16);
-        doc.text("Math Worksheet", 20, 20); // 英語タイトルに変更
+        doc.text("Math Worksheet", 20, 20);
 
         let x = 20;
         let y = 40;
@@ -48,7 +54,7 @@
           }
         }
 
-        doc.save("worksheet.pdf");
+        doc.save("worksheet_with_octopus.pdf");
       });
     });
   </script>

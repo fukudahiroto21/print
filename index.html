@@ -25,10 +25,15 @@
         img.crossOrigin = "anonymous"; // GitHub Pages対策（CORS回避）
 
         img.onload = () => {
-          const doc = new jsPDF();
+          const doc = new jsPDF({
+            orientation: 'landscape', // 👈 横向き
+            unit: 'mm',
+            format: 'a4'
+          });
+        
+          // 横向きA4：幅 297mm × 高さ 210mm
+          doc.addImage(img, 'PNG', 0, 0, 297, 210); // 👈 サイズも変更
 
-          // A4サイズ：210mm × 297mm に背景画像を敷く
-          doc.addImage(img, 'PNG', 0, 0, 210, 297);
 
           // 問題数の取得（10〜50）
           const num = parseInt(document.getElementById("numQuestions").value) || 20;

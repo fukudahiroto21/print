@@ -7,7 +7,9 @@
 </head>
 <body>
   <h2>デザイン付き計算プリント作成</h2>
-  <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
+  <label>問題数（10〜50）: 
+    <input type="number" id="numQuestions" value="20" min="10" max="50">
+  </label>
   <br><br>
   <button id="createPdfBtn">PDFを作成</button>
 
@@ -18,22 +20,21 @@
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const img = new Image();
 
-        // === 👇 GitHub Pagesに合わせるための工夫 ===
-        // 現在のページと同じパスにある画像を読み込む
-        img.src = "./background.png"; // 画像は HTML と同じディレクトリに配置
-
-        img.crossOrigin = "anonymous"; // CORS回避用（GitHub Pagesで重要）
+        // sample.png が images フォルダにあることを考慮したパス
+        img.src = "./images/sample.png";
+        img.crossOrigin = "anonymous"; // GitHub Pages対策（CORS回避）
 
         img.onload = () => {
           const doc = new jsPDF();
 
-          // A4サイズ：210mm x 297mm に画像を背景として配置
+          // A4サイズ：210mm × 297mm に背景画像を敷く
           doc.addImage(img, 'PNG', 0, 0, 210, 297);
 
-          // 計算問題の生成
+          // 問題数の取得（10〜50）
           const num = parseInt(document.getElementById("numQuestions").value) || 20;
           const questions = [];
 
+          // 計算問題を生成
           for (let i = 0; i < num; i++) {
             const a = Math.floor(Math.random() * 90) + 10;
             const b = Math.floor(Math.random() * 90) + 10;
@@ -43,28 +44,34 @@
             questions.push(`${left} ${op} ${right} =`);
           }
 
+          // フォント設定
           doc.setFont("helvetica");
           doc.setFontSize(14);
 
+          // テキスト出力位置の初期値
           let x = 20;
           let y = 50;
           const lineHeight = 10;
 
+          // 問題を2列で表示
           for (let i = 0; i < questions.length; i++) {
             doc.text(questions[i], x, y);
             y += lineHeight;
 
+            // 列を変える
             if ((i + 1) % (num / 2) === 0) {
               x += 80;
               y = 50;
             }
           }
 
+          // PDFを保存
           doc.save("keisan_print.pdf");
         };
 
+        // 画像読み込みエラー処理
         img.onerror = () => {
-          alert("背景画像（background.png）が読み込めませんでした。ファイルの配置場所とファイル名を確認してください。");
+          alert("背景画像（images/sample.png）が読み込めませんでした。パスとファイル名を確認してください。");
         };
       });
     });

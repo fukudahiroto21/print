@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>計算プリント生成</title>
+  <title>計算プリントPDF作成</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h2>計算プリントPDF作成</h2>
+  <h2>デザイン付き計算プリント作成</h2>
   <label>問題数（10〜50）: <input type="number" id="numQuestions" value="20" min="10" max="50"></label>
   <br><br>
   <button id="createPdfBtn">PDFを作成</button>
@@ -16,39 +16,56 @@
       const { jsPDF } = window.jspdf;
 
       document.getElementById("createPdfBtn").addEventListener("click", () => {
-        const doc = new jsPDF();
+        const img = new Image();
 
-        const num = parseInt(document.getElementById("numQuestions").value) || 20;
-        const questions = [];
+        // === 👇 GitHub Pagesに合わせるための工夫 ===
+        // 現在のページと同じパスにある画像を読み込む
+        img.src = "./background.png"; // 画像は HTML と同じディレクトリに配置
 
-        for (let i = 0; i < num; i++) {
-          const a = Math.floor(Math.random() * 90) + 10;
-          const b = Math.floor(Math.random() * 90) + 10;
-          const op = Math.random() > 0.5 ? "+" : "-";
-          const left = op === "+" ? a : Math.max(a, b);
-          const right = op === "+" ? b : Math.min(a, b);
-          questions.push(`${left} ${op} ${right} =`);
-        }
+        img.crossOrigin = "anonymous"; // CORS回避用（GitHub Pagesで重要）
 
-        doc.setFont("helvetica");
-        doc.setFontSize(16);
-        doc.text("計算プリント", 20, 20);
+        img.onload = () => {
+          const doc = new jsPDF();
 
-        let x = 20;
-        let y = 40;
-        const lineHeight = 10;
+          // A4サイズ：210mm x 297mm に画像を背景として配置
+          doc.addImage(img, 'PNG', 0, 0, 210, 297);
 
-        for (let i = 0; i < questions.length; i++) {
-          doc.text(questions[i], x, y);
-          y += lineHeight;
+          // 計算問題の生成
+          const num = parseInt(document.getElementById("numQuestions").value) || 20;
+          const questions = [];
 
-          if ((i + 1) % (num / 2) === 0) {
-            x += 80;
-            y = 40;
+          for (let i = 0; i < num; i++) {
+            const a = Math.floor(Math.random() * 90) + 10;
+            const b = Math.floor(Math.random() * 90) + 10;
+            const op = Math.random() > 0.5 ? "+" : "-";
+            const left = op === "+" ? a : Math.max(a, b);
+            const right = op === "+" ? b : Math.min(a, b);
+            questions.push(`${left} ${op} ${right} =`);
           }
-        }
 
-        doc.save("keisan_print.pdf");
+          doc.setFont("helvetica");
+          doc.setFontSize(14);
+
+          let x = 20;
+          let y = 50;
+          const lineHeight = 10;
+
+          for (let i = 0; i < questions.length; i++) {
+            doc.text(questions[i], x, y);
+            y += lineHeight;
+
+            if ((i + 1) % (num / 2) === 0) {
+              x += 80;
+              y = 50;
+            }
+          }
+
+          doc.save("keisan_print.pdf");
+        };
+
+        img.onerror = () => {
+          alert("背景画像（background.png）が読み込めませんでした。ファイルの配置場所とファイル名を確認してください。");
+        };
       });
     });
   </script>

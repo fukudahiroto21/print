@@ -7,10 +7,14 @@
 </head>
 <body>
   <h2>デザイン付き計算プリント作成</h2>
-  <label>問題数（10〜50）: 
+
+  <!-- 入力フォームを削除またはコメントアウト -->
+  <!-- <label>問題数（10〜50）:
     <input type="number" id="numQuestions" value="20" min="10" max="50">
-  </label>
-  <br><br>
+  </label> -->
+  <p>問題数：10問（固定）</p>
+
+  <br>
   <button id="createPdfBtn">PDFを作成</button>
 
   <script>
@@ -19,27 +23,21 @@
 
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         const img = new Image();
-
-        // sample.png が images フォルダにあることを考慮したパス
         img.src = "./images/text.png";
-        img.crossOrigin = "anonymous"; // GitHub Pages対策（CORS回避）
+        img.crossOrigin = "anonymous";
 
         img.onload = () => {
           const doc = new jsPDF({
-            orientation: 'landscape', // 👈 横向き
+            orientation: 'landscape',
             unit: 'mm',
             format: 'a4'
           });
-        
-          // 横向きA4：幅 297mm × 高さ 210mm
-          doc.addImage(img, 'PNG', 0, 0, 297, 210); // 👈 サイズも変更
 
+          doc.addImage(img, 'PNG', 0, 0, 297, 210);
 
-          // 問題数の取得（10〜50）
-          const num = parseInt(document.getElementById("numQuestions").value) || 20;
+          const num = 10; // 👈 問題数を固定
           const questions = [];
 
-          // 計算問題を生成
           for (let i = 0; i < num; i++) {
             const a = Math.floor(Math.random() * 90) + 10;
             const b = Math.floor(Math.random() * 90) + 10;
@@ -49,32 +47,27 @@
             questions.push(`${left} ${op} ${right} =`);
           }
 
-          // フォント設定
           doc.setFont("helvetica");
-          doc.setFontSize(14);
+          doc.setFontSize(24); // 👈 フォントサイズを大きく
 
-          // テキスト出力位置の初期値
-          let x = 20;
-          let y = 50;
-          const lineHeight = 10;
+          let x = 30;
+          let y = 60;
+          const lineHeight = 20;
 
-          // 問題を2列で表示
+          // 5問ずつ2列で出力
           for (let i = 0; i < questions.length; i++) {
             doc.text(questions[i], x, y);
             y += lineHeight;
 
-            // 列を変える
-            if ((i + 1) % (num / 2) === 0) {
-              x += 80;
-              y = 50;
+            if ((i + 1) === 5) {
+              x += 120; // 横にずらす
+              y = 60;
             }
           }
 
-          // PDFを保存
           doc.save("keisan_print.pdf");
         };
 
-        // 画像読み込みエラー処理
         img.onerror = () => {
           alert("背景画像（images/sample.png）が読み込めませんでした。パスとファイル名を確認してください。");
         };

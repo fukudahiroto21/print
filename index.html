@@ -10,13 +10,12 @@
   <p>問題数：10問（固定）</p>
   <br>
   <button id="createPdfBtn">PDFを作成</button>
-  <button id="previewPdfBtn">印刷プレビュー</button> <!-- 👈 新しいボタン追加 -->
+  <button id="previewPdfBtn">印刷プレビュー</button>
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
 
-      // 共通のPDF作成関数
       function generatePdf(callback) {
         const img = new Image();
         img.src = "./images/text.png";
@@ -51,7 +50,15 @@
           const lineHeight = 30;
 
           for (let i = 0; i < questions.length; i++) {
-            doc.text(questions[i], x, y);
+            const question = questions[i];
+            let offsetX = x;
+
+            for (let char of question) {
+              const adjustY = (char === "–") ? y - 1 : y;
+              doc.text(char, offsetX, adjustY);
+              offsetX += doc.getTextWidth(char);
+            }
+
             y += lineHeight;
             if ((i + 1) === 5) {
               x += 120;
@@ -67,17 +74,15 @@
         };
       }
 
-      // ダウンロードボタンの処理
       document.getElementById("createPdfBtn").addEventListener("click", () => {
         generatePdf(doc => doc.save("keisan_print.pdf"));
       });
 
-      // プレビューボタンの処理
       document.getElementById("previewPdfBtn").addEventListener("click", () => {
         generatePdf(doc => {
           const pdfBlob = doc.output("blob");
           const blobUrl = URL.createObjectURL(pdfBlob);
-          window.open(blobUrl, "_blank"); // 👈 新しいタブでプレビュー
+          window.open(blobUrl, "_blank");
         });
       });
     });

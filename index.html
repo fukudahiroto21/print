@@ -7,21 +7,17 @@
 </head>
 <body>
   <h2>デザイン付き計算プリント作成</h2>
-
-  <!-- 入力フォームを削除またはコメントアウト -->
-  <!-- <label>問題数（10〜50）:
-    <input type="number" id="numQuestions" value="20" min="10" max="50">
-  </label> -->
   <p>問題数：10問（固定）</p>
-
   <br>
   <button id="createPdfBtn">PDFを作成</button>
+  <button id="previewPdfBtn">印刷プレビュー</button> <!-- 👈 新しいボタン追加 -->
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
 
-      document.getElementById("createPdfBtn").addEventListener("click", () => {
+      // 共通のPDF作成関数
+      function generatePdf(callback) {
         const img = new Image();
         img.src = "./images/text.png";
         img.crossOrigin = "anonymous";
@@ -35,7 +31,7 @@
 
           doc.addImage(img, 'PNG', 0, 0, 297, 210);
 
-          const num = 10; // 👈 問題数を固定
+          const num = 10;
           const questions = [];
 
           for (let i = 0; i < num; i++) {
@@ -48,29 +44,41 @@
           }
 
           doc.setFont("helvetica");
-          doc.setFontSize(24); // 👈 フォントサイズを大きく
+          doc.setFontSize(24);
 
           let x = 30;
           let y = 60;
           const lineHeight = 20;
 
-          // 5問ずつ2列で出力
           for (let i = 0; i < questions.length; i++) {
             doc.text(questions[i], x, y);
             y += lineHeight;
-
             if ((i + 1) === 5) {
-              x += 120; // 横にずらす
+              x += 120;
               y = 60;
             }
           }
 
-          doc.save("keisan_print.pdf");
+          callback(doc);
         };
 
         img.onerror = () => {
-          alert("背景画像（images/sample.png）が読み込めませんでした。パスとファイル名を確認してください。");
+          alert("背景画像（images/text.png）が読み込めませんでした。パスとファイル名を確認してください。");
         };
+      }
+
+      // ダウンロードボタンの処理
+      document.getElementById("createPdfBtn").addEventListener("click", () => {
+        generatePdf(doc => doc.save("keisan_print.pdf"));
+      });
+
+      // プレビューボタンの処理
+      document.getElementById("previewPdfBtn").addEventListener("click", () => {
+        generatePdf(doc => {
+          const pdfBlob = doc.output("blob");
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          window.open(blobUrl, "_blank"); // 👈 新しいタブでプレビュー
+        });
       });
     });
   </script>

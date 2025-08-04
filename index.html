@@ -41,7 +41,7 @@
           for (let i = 0; i < num; i++) {
             const a = Math.floor(Math.random() * 90) + 10;
             const b = Math.floor(Math.random() * 90) + 10;
-            const op = Math.random() > 0.5 ? "+" : "-";
+            const op = Math.random() > 0.5 ? "+" : "－";
             const left = op === "+" ? a : Math.max(a, b);
             const right = op === "+" ? b : Math.min(a, b);
             questions.push(`${left} ${op} ${right} =`);
